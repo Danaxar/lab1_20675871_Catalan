@@ -1,3 +1,11 @@
+;Descripción de la función
+;Dominio (lo que entra)
+;Recorrido (lo que retorna)
+;Tipo de recursión
+;Documentación del cuerpo
+
+
+
 #lang racket
 
 "Bienvenido a paradigmasdocs"
@@ -7,6 +15,10 @@
 
 "Escriba <(inicio __su_respuesta__)> para comenzar con la ejecución"
 
+; Función que recibe la primera respuesta una vez el programa es iniciado en la cual te pide:
+; Iniciar sesión o registrarte
+; Dominio: Entra un numero entero
+; Recorrido: Sale un numero entero
 (define inicio
 	(lambda(primeraRespuesta)
 		; Aqui se decide si inicia sesión o se registra
