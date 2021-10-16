@@ -6,11 +6,31 @@
     ; Versiones de los documentos  -> lista de documentos
 
 
+
+
+
 ; Implementación:
-    ; Representación
-    ; Constructores
-    ; Pertenencia
-    ; Selectores
-    ; Modificadores
-    ; Otras operaciones
+; Representación
+
+
+
+; Constructores
+; Encriptador
+; Desencriptador
+; Constructor paradigmadocs
+(define paradigmadocs(
+
+        (lambda(nombrePlataforma fecha encriptador desEncriptador)
+
+
+        
+        )
+
+    )
+)
+
+; Pertenencia
+; Selectores
+; Modificadores
+; Otras operaciones
     
