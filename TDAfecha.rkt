@@ -1,8 +1,18 @@
 ; TDA fecha
-; numero segundos
-; numero minutos
-; numero horas
+
+; Representación -> dd - mm - yyyy
 
 ; dia del mes
 ; mes
 ; año
+
+; Constructores
+(define date
+    (lambda(dia mes ano)
+        ; Cuerpo
+        ()
+    )
+)
+
+
+
