@@ -6,103 +6,91 @@
 
 
 
+; Principal
 #lang racket
 
-"Bienvenido a paradigmasdocs"
-"¿Qué desea hacer?"
-"1) Iniciar sesión"
-"2) Registrarse"
+; Función para imprimir las funciones dentro del docs
+(define (printFunciones) 
+    (write "1) Crear un documento") (newline)
+    (write "2) Eliminar un documento") (newline)
+    (write "3) Compartir un documento") (newline)
+    (write "4) Asignar permisos sobre un documento") (newline)
+    (write "5) Editar un documento") (newline)
+)
 
-"Escriba <(inicio __su_respuesta__)> para comenzar con la ejecución"
+; Función para mostrar por pantalla los archivos creados en paradigmasdocs
+(define (printArchivos lista_archivos))
 
-; Función que recibe la primera respuesta una vez el programa es iniciado en la cual te pide:
-; Iniciar sesión o registrarte
-; Dominio: Entra un numero entero
-; Recorrido: Sale un numero entero
-(define inicio
-	(lambda(primeraRespuesta)
-		; Aqui se decide si inicia sesión o se registra
-		(if (= primeraRespuesta 1)
-			"Ha escogido iniciar sesión"
-			; Caso verdadero (iniciar sesión)
-				; Pedir usuario y contraseña
-				; Verificar que exista en algún registro
-			"Ha escogido registrarse"
-			"Por favor ingrese su nombre de nuevo usuario"
-			; Caso falso (Registrarse)
-				; Pedir usuario
-				; Pedir contraseña
-				; Pedir que confirme la contraseña
-				; Escribir usuario y contraseña en registro
-		)
-	)
+; me falta poder obtener la entrada de usuario
+; En caso de no poderse usar una instrucción para que el usuario haga su propio llamado a la función
+
+
+
+
+
+
+
+; Registrarse
+(define verificar)
+
+;EMPLEAR RECURSIÓN NATURAL
+(define (register paradigmadocs fecha usuario contrasena)
+    (write "Verificando...") (newline)
+    
+    (if (= verificar()))
 )
 
 
-"Funciones disponibles"
-"1) Crear un documento"
-"2) Eliminar un documento"
-"3) Compartir un documento"
-"4) Asignar permisos sobre un documento"
-"5) Editar un documento"
+; Iniciar sesión
+; Prerequisito: Función register
+; Emplear funciones de orden superior
+; Retornar una función
+; Usar recursión natural o de cola
+; Dominio: paradigmadocs X string X string X function
+; Recorrido: Function
+; Recorrido final: paradigmadocs
+(define (login paradigmadocs usuario contrasena operation))
 
-(define accion
-	(lambda x
-		(if (= x 1)
-			; Caso verdadero
-				; Crear un documento
-			; Caso falso -> otras opciones
-			(if (= x 2)
-				; Caso verdadero
-					; Eliminar un documento
-				; Caso falso
-				(if (= x 3)
-					; Caso verdadero
-						; Compartir un documento
-					; Caso falso
-					(if (= x 4)
-						; Caso verdadero
-							; Asignar permisos sobre un documento
-						; Caso falso
-						(if (= x 5)
-							; Caso verdadero
-							"Que acción desea hacer?"
-							"a) Escribir"
-							"b) Cambiar estilos a los textos (ej: cursiva, negrita, etc.)"
-							"c) Buscar y reemplazar"
-							"d) Copiar texto"
-							"e) Pegar texto"
-							"f) Cortar texto"
-							"g) Crear títulos, subtítulos"
-							"h) Crear un índice"
-							(lambda(y)
-								(if (= y a)
-									; v
-									(if (= y b)
-										() ; v
-										(if (= y c)
-											() ; v
-											(if (= y d)
-												() ; v
-												(if (= y e)
-													() ; v
-													(if (= y f)
-														()
-														(if (= y g)
-															()
-															() ; Opción h
-														)
-													)
-												)
-											)
-										)
-									)
-								)
-							)
-						)
-					)
-				)
-			)
-		)
-	)
-)
+
+; Operaciones sobre archivos
+
+; Crear archivo
+; Prerequisito: Función login
+; La función no arroja ningún cambio si no se utiliza como parametro de entrada de login
+; La información debe ser encriptada
+; Dominio: paradigmadocs X date X String X (nombreDoc) X String (contenido)
+; Recorrido: paradigmadocs
+(define (create paradigmadocs fecha usuario contenido))
+
+
+; Compartir archivo
+; Prerequisitos: Función create
+; No realiza ningún cambio si no se utiliza como parámetro de entrada en la función login
+; Dominio: paradigmadocs X int X access list
+; Recorrido: paradigmadocs
+(define (share paradigmadocs id_documento ...............))
+
+
+
+
+; Añadir texto al final del documento
+; Prerequisito: Función share
+; No arroja ningún cambio si no se utiliza como parámetro de entrada en la función login
+; Solo pueden escribir los que tengan permiso de escritura (writing)
+; El resultado obtenido por esta función es encriptada por encrypFunction
+; Dominio: paradigmadocs X int X date X String
+; Recorrido: Paradigmadocs
+(define (add paradigmadocs id_documento fecha contenidoTexto))
+
+
+
+
+
+; Prerequisito
+;
+; Dominio
+; Recorrido
+
+
+
+

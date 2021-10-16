@@ -16,7 +16,9 @@
 
 ; Constructores
 ; Encriptador
+(define (encrypFunction parametros...........))
 ; Desencriptador
+
 ; Constructor paradigmadocs
 (define paradigmadocs(
 

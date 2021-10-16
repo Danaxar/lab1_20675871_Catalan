@@ -12,9 +12,14 @@
 
 
 ; Implementación:
-    ; Representación
-    ; Constructores
-    ; Pertenencia
-    ; Selectores
-    ; Modificadores
-    ; Otras operaciones
+; Representación
+; Constructores
+(define document
+    (lambda(fecha id historial accesos)
+        ; Cuerpo de la función
+    )
+)
+; Pertenencia
+; Selectores
+; Modificadores
+; Otras operaciones

@@ -10,7 +10,7 @@
 (define date
     (lambda(dia mes ano)
         ; Cuerpo
-        ()
+        (list dia mes ano)
     )
 )
 
