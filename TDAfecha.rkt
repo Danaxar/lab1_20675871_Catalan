@@ -48,7 +48,7 @@
 ; Función que verifica si un numero corresponde a un dia
 ; Dominio: int
 ; Recorrido: boolean
-(define (esDia d)
+(define (dia? d)
     (if (and (integer? d) (>= d 1) (<= d 31))
         ; Caso verdadero
         #t
@@ -61,7 +61,7 @@
 ; Función que determina si un numero es mes
 ; Dominio: int
 ; Recorrido: Boolean
-(define (esMes m)
+(define (mes? m)
     (if (and (integer? m) (>= m 1) (<= m 12))
         ; Caso verdadero
         #t
@@ -74,7 +74,7 @@
 ; Función que determina si un numero es Año
 ; Dominio: int
 ; Recorrido: boolean
-(define (esAno a)
+(define (ano? a)
     (if (and (integer? a) (>= a 1974))
         ; Caso verdadero
         #t
@@ -88,7 +88,7 @@
 ; Función que determina si un numero es una fecha
 ; Dominio: list: int x int x int
 ; Recorrido: boolean
-(define (esFecha f)
+(define (fecha? f)
     (if (and (= (length f) 3)  (esDia (car f)) (esMes (car(cdr f)))  (esAno (car (cdr (cdr f))))  )
         ; caso verdadero
         #t
