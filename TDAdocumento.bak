@@ -1,8 +1,6 @@
 #lang racket
 ; TDA documento
 (require "TDAfecha.rkt")
-(require "TDAusuario.rkt")
-(require "TDAregistroid.rkt")
 
 
 ; Cosas que debe contener un documento:
@@ -15,7 +13,7 @@
 ; Historial de Versiones     -> lista de tda documento
 ; Usuarios que tienen acceso -> lista de tda usuarios
 
-; djfjdfjdf
+
 ; Implementación:
 ; Representación
 
