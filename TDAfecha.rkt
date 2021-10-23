@@ -1,3 +1,4 @@
+#lang racket
 ; TDA fecha
 
 ;Descripción de la función
@@ -32,7 +33,7 @@
             (<= mes 12)
             ; Año
             (integer? ano)
-            (>= ano 1974)
+            (>= ano 0)
         )
         
         ; Caso Verdadero -> construcción del tda
@@ -75,7 +76,7 @@
 ; Dominio: int
 ; Recorrido: boolean
 (define (ano? a)
-    (if (and (integer? a) (>= a 1974))
+    (if (and (integer? a) (>= a 0))
         ; Caso verdadero
         #t
         ; Caso falso
@@ -89,7 +90,7 @@
 ; Dominio: list: int x int x int
 ; Recorrido: boolean
 (define (fecha? f)
-    (if (and (= (length f) 3)  (esDia (car f)) (esMes (car(cdr f)))  (esAno (car (cdr (cdr f))))  )
+    (if (and (= (length f) 3)  (dia? (car f)) (mes? (car(cdr f)))  (ano? (car (cdr (cdr f))))  )
         ; caso verdadero
         #t
         ; caso falso
@@ -105,7 +106,7 @@
 ; Dominio: list: int x int x int
 ; Recorrido: int
 (define (obtenerDia f)
-    (if (esFecha f)
+    (if (fecha? f)
         ; Caso verdadero
         (car f)
         ; Caso falso
@@ -118,7 +119,7 @@
 ; Dominio: list: int x int x int
 ; Recorrido: int
 (define (obtenerMes f)
-    (if (esFecha f)
+    (if (fecha? f)
         ; Caso verdadero
         (cadr f)
         ; Caso falso
@@ -131,7 +132,7 @@
 ; Dominio: list: int x int x int
 ; Recorrido: int
 (define (obtenerAno f)
-    (if (esFecha f)
+    (if (fecha? f)
         ; Caso verdadero
         (caddr f)
         ; Caso falso
@@ -150,11 +151,11 @@
 ; Dominio: list: int x int x int
 ; Recorrido: fecha
 (define (modificarDia fecha nuevoDia)
-    (if (esFecha fecha)
+    (if (and (fecha? fecha) (dia? nuevoDia))
         ; Caso verdadero
         (list nuevoDia (obtenerMes fecha) (obtenerAno fecha))
         ; Caso falso
-        null
+        fecha
     )
 )
 ; FUNCIONA
@@ -164,11 +165,11 @@
 ; Dominio: list: int x int x int
 ; Recorrido: fecha
 (define (modificarMes fecha nuevoMes)
-    (if (esFecha fecha)
+    (if (and (fecha? fecha) (mes? nuevoMes))
         ; Caso verdadero
         (list (obtenerDia fecha) nuevoMes (obtenerAno fecha))
         ; Caso falso
-        null
+        fecha
     )
 )
 
@@ -177,11 +178,11 @@
 ; Dominio: list: int x int x int
 ; Recorrido: fecha
 (define (modificarAno fecha nuevoAno)
-    (if (esFecha fecha)
+    (if (and (fecha? fecha) (ano? nuevoAno))
         ; Caso verdadero
         (list (obtenerDia fecha) (obtenerMes fecha) nuevoAno)
         ; Caso falso
-        null
+        fecha
     )
 )
 
