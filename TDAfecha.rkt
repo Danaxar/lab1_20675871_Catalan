@@ -186,3 +186,8 @@
     )
 )
 
+
+(provide date) ; Constructor
+(provide dia? mes? ano? fecha?) ; Pertenencia
+(provide obtenerDia obtenerMes obtenerAno) ; Selectores
+(provide modificarDia modificarMes modificarAno) ; Modificadores
