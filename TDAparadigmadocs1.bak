@@ -1,0 +1,9 @@
+#lang racket
+(require "TDAfecha.rkt")
+(require "TDAusuario.rkt")
+(require "TDAregistroid.rkt")
+(require "TDAlistausuario.rkt")
+
+; Tda paradigma doc
+(define administrador (user "admin" "usach"))
+(define lista_usuarios (crearListaUsuario administrador))

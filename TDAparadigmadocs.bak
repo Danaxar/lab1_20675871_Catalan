@@ -1,0 +1,39 @@
+#lang racket
+(require "TDAfecha.rkt")
+
+; Tda programa
+; Contiene:
+    ; Usuarios -> lista de tda usuarios
+    ; Sesion activa -> tda usuario
+    ; Documentos   -> lista de tda documento
+    ; Versiones de los documentos  -> lista de documentos
+
+(define palabra ("daniel"))
+(define (encriptador texto)
+    ((reverse (string->list texto)))
+)
+
+
+; Implementación:
+; Representación
+
+
+
+; Constructores
+; Encriptador
+
+
+; Desencriptador
+
+; Constructor paradigmadocs
+(define (paradigmadocs nombreDocs fecha encriptador desencriptador)
+    (if (and (string? nombreDocs) (fecha? fecha))
+        (list nombreDocs fecha encriptador desencriptador)
+        null
+    )
+)
+
+; Pertenencia
+; Selectores
+; Modificadores
+; Otras operaciones
