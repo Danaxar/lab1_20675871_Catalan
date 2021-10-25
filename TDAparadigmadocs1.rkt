@@ -5,6 +5,7 @@
 (require "TDAlistausuario.rkt")
 (require "TDAdocumento.rkt")
 (require "TDAlistadocumento.rkt")
+(require "TDAlistaaccesos.rkt")
 
 #|
 Cosas que contiene el paradigmadocs
@@ -171,8 +172,8 @@ Recorrido = paradigmadocs
 |#
 (define (agregarDocumentoDoc paradoc documento)
   (if (and (paradigmadocs? paradoc) (document? documento))
-       ; Caso verdadero
-       (paradigmadocsImplicito
+      ; Caso verdadero
+      (paradigmadocsImplicito
        (obtenerNombreDocs paradoc)
        (obtenerFechaDocs paradoc)
        (obtenerEncryptDocs paradoc)
@@ -183,8 +184,30 @@ Recorrido = paradigmadocs
        )
       ; Caso falso
       paradoc
+      )
   )
-)
+
+#|Agregar cambiar sesión activa
+Dominio = paradigmadocs
+Recorrido = paradigmadocs
+|#
+(define (cambiarSesionActivaDoc paradoc usuario)
+  (if (and (paradigmadocs? paradoc) (user? usuario))
+      ; Caso verdadero
+      (paradigmadocsImplicito
+       (obtenerNombreDocs paradoc)
+       (obtenerFechaDocs paradoc)
+       (obtenerEncryptDocs paradoc)
+       (obtenerDecryptDocs paradoc)
+       (obtenerListaUsersDoc paradoc) 
+       (obtenerListaDocumentsDoc paradoc)
+       usuario ; Aqui hacer el cambio
+       )
+      ; Caso falso
+      paradoc
+      )
+  )
+
 
 
 
@@ -202,6 +225,7 @@ Recorrido = paradigmadocs
   )
 
 ; 2) FUNCIÓN LOGIN
+#|
 (define (login paradoc username password function)
   (if (paradigmadocs? paradoc)
       ; Caso verdadero
@@ -220,17 +244,54 @@ Recorrido = paradigmadocs
       (write "El sistema ingresado es incorrecto")
       )
   )
+|#
+
+(define login (lambda (paradoc username password function)
+                ; Caso verdadero
+                (if (and (string? username) (string? password) (paradigmadocs? paradoc)) ; Verificar entrada
+                    ; Caso verdadero
+                    (if (existeUser? (obtenerListaUsersDoc paradoc) (user username password)) ; Existencia usuario
+                        (function
+                         (cambiarSesionActivaDoc paradoc (user username password)) ; Retorna paradigmadocs
+                         )
+                        (write "El usuario no se encuentra registrado")
+                        )
+                    ; Caso falso
+                    function
+      
+                    )
+                )
+  )
 
 ; 3) FUNCIÓN CREATE
 ; Función que le permite al usuario con una sesión iniciada crear un nuevo documento
 ; Dominio = paradoc X fecha X string X string
 ; Recorrido = paradigmasdocs
+#|
 (define (create paradoc  fecha nombreDoc contenido)
   (if (and (fecha? fecha) (string? nombreDoc) (string? contenido))
-      (agregarDocumentoDoc paradoc (document fecha nombreDoc contenido))
+      (agregarDocumentoDoc paradoc (document fecha nombreDoc contenido)) ; Retorna paradoc actualizado
       paradoc
   )
 )
+
+|#
+
+; Hacer una función currificada para favorecer el lazy
+(define create
+  (lambda (paradoc)
+    (lambda (fecha nombreDoc contenido)
+      ; Cuerpo de función
+      (if (and (fecha? fecha) (string? nombreDoc) (string? contenido))
+          (agregarDocumentoDoc (force paradoc) (document fecha nombreDoc contenido (obtenerSesionActivaDoc paradoc))) ; V
+          paradoc ; F
+          )
+      )
+    )
+  )
+
+
+
 
 ; 4) FUNCIÓN SHARE
 #|Función que permite compartir el documento con otros usuarios especificando
@@ -241,20 +302,33 @@ Recorrido =
 
 
 
+#|
+(define share
+  (lambda (paradoc)
+    (lambda (idDocumento acceso . accesses)
+      
+      )
+  
+  )
+|#
 
 
 
 
 
-(define (share paradoc idDocumento ))
 
 
-
-
-
-
-
-
+; Función para imprimir el sistema
+(define (printSistema base)
+  (begin0
+   (write (obtenerNombreDocs base)) (newline)
+                                    (write "Fecha: ") (write (obtenerFechaDocs base)) (newline)
+                                    (write "Usuarios registrados:")
+                                    (write (obtenerListaUsersDoc base)) (newline)
+                                    (write "Lista de documentos") (write (obtenerListaDocumentsDoc base)) (newline)
+                                    (write "Sesion activa") (write (obtenerSesionActivaDoc base)) (newline)
+  ) 
+)
 
 
 
@@ -274,5 +348,6 @@ Recorrido =
 
 ; Sistema inicial
 (define sistema (paradigmadocs "paradoc" fecha encriptador desencriptador))
-
+(define sistema2 (register sistema fecha "daniel" "123"))
+;(define promesa (login sistema2 "daniel" "123" create))
 

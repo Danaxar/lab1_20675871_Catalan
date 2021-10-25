@@ -3,6 +3,8 @@
 (require "TDAfecha.rkt")
 (require "TDAusuario.rkt")
 (require "TDAregistroid.rkt")
+(require "TDAparadigmadocs1.rkt")
+(require "TDAlistaaccesos.rkt")
 
 
 
@@ -23,36 +25,74 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
 
 ; DEJAR PARA DESPUÉS
 
-(define (document fecha nombreDoc contenido)
+(define (document fecha nombreDoc contenido creador accesos id)
   (if (and 
-  			(string? nombreDoc) 
-			(fecha? fecha) 
-			(string? contenido)
-  		)
-        (list fecha nombreDoc contenido)
-        null
+       (string? nombreDoc) 
+       (fecha? fecha) 
+       (string? contenido)
+       (user? creador) ; -> sesión activa
+       (accesess? accesos)
+       (integer? id)
+       )
+      (list fecha nombreDoc contenido creador accesos id)
+      null
+      )
   )
-)
 
 ; Pertenencia
 ; Función que verifica si el parametro de entrada es un documento
 (define (document? documento)
-	(if (= (length documento) 3)
-		(if (and (fecha? (car documento))
-				( string?(cadr documento))
-				(string? (caddr documento))
-			)
+  (if (= (length documento) 6)
+      (if
+       ; Condiciones
+       (and (fecha? (car documento))
+            ( string?(cadr documento))
+            (string? (caddr documento))
+            (user? (cadddr documento))
+            (accesess? (caddddr documento))
+            (integer? id)
+            )
 
-			#t
-			#f
-		)
-		#f
-	)
-)
+       #t
+       #f
+       )
+      
+      #f
+      )
+  )
 
 
 ; Selectores
+; Obtener la fecha del documento
+(define (obtenerFechaDocumento documento)
+  (list-ref documento 0)
+  )
+; Obtener el nombre del documento
+(define (obtenerNombreDocumento documento)
+  (list-ref documento 1)
+  )
+; Obtener el contenido del documento
+(define (obtenerContenidoDocumento documento)
+  (list-ref documento 2)
+  )
+; Obtener el creador del documento
+(define (obtenerCreadorDocumento documento)
+  (list-ref documento 3)
+  )
+; Obtener la lista de accesos del documento (lista de usuarios)
+(define (obtenerListaAccesos documento)
+  (list-ref documento 4)
+  )
+; Obtener id del documento
+(define (obtenerListaAccesos documento)
+  (list-ref documento 5)
+  )
 
 ; Modificadores
+;(define (agregarTexto))
 ; Otras operaciones
-(provide document document?)
+
+; Exportar
+(provide document)
+(provide document?)
+(provide obtenerFechaDocumento obtenerNombreDocumento obtenerContenidoDocumento obtenerCreadorDocumento obtenerListaAccesos obtenerListaAccesos)
