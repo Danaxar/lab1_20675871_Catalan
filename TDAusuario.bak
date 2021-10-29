@@ -1,3 +1,4 @@
+#lang racket
 ; TDA USUARIO
 
 ; Representacion
@@ -10,7 +11,7 @@
 ; Dominio: string x entero
 ; Recorrido: par: user
 (define (user name pass)
-    (if (and (string? name) (integer? pass))
+    (if (and (string? name) (string? pass))
         (cons name pass)
         null
     )
@@ -22,8 +23,13 @@
 ; Dominio: user: string X entero
 ; Recorrido: boolean
 (define (user? par)
-    (if (and (cons? par) (string? (car par)) (integer? (cdr par)))
-        #t
+    (if (cons? par)  ; Verificar primero que sea cons
+        ; Caso verdadero
+        (if (and (string? (car par)) (string? (cdr par)))
+            #t
+            #f
+        )
+        ; Caso falso
         #f
     )
 )
@@ -73,3 +79,10 @@
 )
 ; Funciona
 ; Otras operaciones
+
+
+; Exportar
+(provide user) ; Constructor
+(provide user?) ; Pertenencia
+(provide obtenerNombre obtenerPass) ; Selectores
+(provide modificarNombre modificarPass) ; Modificadores

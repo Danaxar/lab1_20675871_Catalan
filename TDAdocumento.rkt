@@ -3,7 +3,6 @@
 (require "TDAfecha.rkt")
 (require "TDAusuario.rkt")
 (require "TDAregistroid.rkt")
-(require "TDAparadigmadocs1.rkt")
 (require "TDAlistaaccesos.rkt")
 
 
@@ -45,12 +44,12 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
   (if (= (length documento) 6)
       (if
        ; Condiciones
-       (and (fecha? (car documento))
-            ( string?(cadr documento))
-            (string? (caddr documento))
-            (user? (cadddr documento))
-            (accesess? (caddddr documento))
-            (integer? id)
+       (and (fecha? (list-ref documento 0))
+            ( string?(list-ref documento 1))
+            (string? (list-ref documento 2))
+            (user? (list-ref documento 3))
+            (accesess? (list-ref documento 4))
+            (integer? (list-ref documento 5))
             )
 
        #t
@@ -60,6 +59,8 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
       #f
       )
   )
+
+
 
 
 ; Selectores
@@ -84,15 +85,31 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
   (list-ref documento 4)
   )
 ; Obtener id del documento
-(define (obtenerListaAccesos documento)
+(define (obtenerIdDocumento documento)
   (list-ref documento 5)
   )
 
 ; Modificadores
 ;(define (agregarTexto))
+
+; Agregar un permiso
+(define (agregarPermiso documento acceso)
+  (document
+   (obtenerFechaDocumento documento)
+   (obtenerNombreDocumento documento)
+   (obtenerContenidoDocumento documento)
+   (obtenerCreadorDocumento documento)
+   (agregarAcceso (obtenerListaAccesos documento) acceso)
+   (obtenerIdDocumento documento))
+  )
+; Quitar un permiso
 ; Otras operaciones
+
+
+;(define documentoPrueba (document ))
 
 ; Exportar
 (provide document)
 (provide document?)
 (provide obtenerFechaDocumento obtenerNombreDocumento obtenerContenidoDocumento obtenerCreadorDocumento obtenerListaAccesos obtenerListaAccesos)
+(provide obtenerIdDocumento)

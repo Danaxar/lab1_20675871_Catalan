@@ -1,11 +1,21 @@
 #lang racket
+
 (require "TDAfecha.rkt")
+
 (require "TDAusuario.rkt")
+
 (require "TDAregistroid.rkt")
+
 (require "TDAlistausuario.rkt")
+
 (require "TDAdocumento.rkt")
+
 (require "TDAlistadocumento.rkt")
+
+(require "TDAacceso.rkt")
 (require "TDAlistaaccesos.rkt")
+
+
 
 #|
 Cosas que contiene el paradigmadocs
@@ -208,7 +218,46 @@ Recorrido = paradigmadocs
       )
   )
 
+; Agregar un permiso a un documento
+; Dominio = paradigmadocs X acceso
+(define (modificarListaPermiso paradoc acceso)
+  (if (and (paradigmadocs? paradoc) (access? acceso))
+      ; Caso verdadero
+      (paradigmadocsImplicito
+       (obtenerNombreDocs paradoc)
+       (obtenerFechaDocs paradoc)
+       (obtenerEncryptDocs paradoc)
+       (obtenerDecryptDocs paradoc)
+       (obtenerListaUsersDoc paradoc) 
+       (append (obtenerListaDocumentsDoc paradoc)) ; No usar append
+       #|Necesito obtener la lista de documentos
+        Necesito cambiar un documento en especifico
+        Necesito cambiar la lista de accesos de un documento
+        Necesito agregar un acceso|#
+       (obtenerSesionActivaDoc paradoc) ; Aqui hacer el cambio
+       )
+      ; Caso falso
+      paradoc
+      )
+  )
 
+
+(define (reemplazarDocumentoDoc paradoc documentoInicial documentoFinal)
+  (if (and (paradigmadocs? paradoc) (document? documentoFinal))
+      ; Caso verdadero
+      (paradigmadocsImplicito
+       (obtenerNombreDocs paradoc)
+       (obtenerFechaDocs paradoc)
+       (obtenerEncryptDocs paradoc)
+       (obtenerDecryptDocs paradoc)
+       (obtenerListaUsersDoc paradoc) 
+       (reemplazarDocumento (obtenerListaDocumentsDoc paradoc) documentoInicial documentoFinal)
+       (obtenerSesionActivaDoc paradoc)
+       )
+      ; Caso falso
+      paradoc
+      )
+  )
 
 
 ; 1) FUNCIÓN REGISTER
@@ -283,7 +332,18 @@ Recorrido = paradigmadocs
     (lambda (fecha nombreDoc contenido)
       ; Cuerpo de función
       (if (and (fecha? fecha) (string? nombreDoc) (string? contenido))
-          (agregarDocumentoDoc (force paradoc) (document fecha nombreDoc contenido (obtenerSesionActivaDoc paradoc))) ; V
+          (agregarDocumentoDoc ; V
+           paradoc
+           (document ; Creación de tda documento
+            fecha 
+            nombreDoc
+            contenido
+            (obtenerSesionActivaDoc paradoc) ; Usuario creador
+            (accesess (access (obtenerNombre (obtenerSesionActivaDoc paradoc)) #\w))
+            ; En esta linea hay que agregar el id incremental
+            (+ (obtenerIdDocumento (obtenerUltimoDocumento (obtenerListaDocumentsDoc paradoc))) 1)
+            )
+           ) ; Lista de accesos -> creador
           paradoc ; F
           )
       )
@@ -301,16 +361,42 @@ Recorrido =
 |#
 
 
-
 #|
+(define (paradigmadocsImplicito
+         name date
+         encryptFunction decryptFunction
+         lista_usuarios lista_documentos userActivo))
+|#
+
+
+
+
 (define share
   (lambda (paradoc)
     (lambda (idDocumento acceso . accesses)
-      
+      (if (null? accesses) ; Si solo hay un acceso
+          ; t -> solo un acceso
+          (reemplazarDocumentoDoc
+           paradoc
+           (buscarDocumento (obtenerListaDocumentsDoc paradoc) idDocumento) ; Documento inicial
+           ; Documento final
+           (document
+            (obtenerFechaDocumento paradoc)
+            (obtenerNombreDocumento (buscarDocumento (obtenerListaDocumentsDoc paradoc) idDocumento))
+            (obtenerContenidoDocumento (buscarDocumento (obtenerListaDocumentsDoc paradoc) idDocumento))
+            (obtenerCreadorDocumento (buscarDocumento (obtenerListaDocumentsDoc paradoc) idDocumento))
+            (agregarAcceso (obtenerListaAccesos (buscarDocumento (obtenerListaDocumentsDoc paradoc) idDocumento)) acceso)
+            (+ idDocumento 1)
+            )
+           
+           )
+          ; f -> más de un acceso
+          null
+          )
       )
-  
   )
-|#
+  )
+
 
 
 
@@ -321,14 +407,14 @@ Recorrido =
 ; Función para imprimir el sistema
 (define (printSistema base)
   (begin0
-   (write (obtenerNombreDocs base)) (newline)
-                                    (write "Fecha: ") (write (obtenerFechaDocs base)) (newline)
-                                    (write "Usuarios registrados:")
-                                    (write (obtenerListaUsersDoc base)) (newline)
-                                    (write "Lista de documentos") (write (obtenerListaDocumentsDoc base)) (newline)
-                                    (write "Sesion activa") (write (obtenerSesionActivaDoc base)) (newline)
-  ) 
-)
+    (write (obtenerNombreDocs base)) (newline)
+    (write "Fecha: ") (write (obtenerFechaDocs base)) (newline)
+    (write "Usuarios registrados:")
+    (write (obtenerListaUsersDoc base)) (newline)
+    (write "Lista de documentos") (write (obtenerListaDocumentsDoc base)) (newline)
+    (write "Sesion activa") (write (obtenerSesionActivaDoc base)) (newline)
+    ) 
+  )
 
 
 
@@ -342,12 +428,29 @@ Recorrido =
 (define lista_usuarios (crearListaUsuario administrador))
 (define lista_usuarios2 (agregarUser lista_usuarios administrador2))
 
-(define null_document (document fecha "" ""))
+(define null_document
+  (document
+   fecha " " " " administrador
+   (accesess (access (obtenerNombre administrador) #\w))
+   0
+   )
+  )
+
+(define null_document2
+  (document
+   fecha "-" "-" administrador2
+   (accesess (access (obtenerNombre administrador2) #\w))
+   1
+   )
+  )
+
 (define lista_documentos (crearListaDocumento null_document))
 (define userActivo (user "admin" "usach"))
 
 ; Sistema inicial
 (define sistema (paradigmadocs "paradoc" fecha encriptador desencriptador))
 (define sistema2 (register sistema fecha "daniel" "123"))
-;(define promesa (login sistema2 "daniel" "123" create))
-
+(define sistema3 (register sistema2 fecha "fran" "123"))
+;agregarDocumentoDoc paradoc documento
+(define sistema4 (agregarDocumentoDoc sistema3 null_document2))
+(define LISTADOCUMENTOS (obtenerListaDocumentsDoc sistema4))
