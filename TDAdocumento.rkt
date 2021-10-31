@@ -3,6 +3,7 @@
 (require "TDAfecha.rkt")
 (require "TDAusuario.rkt")
 (require "TDAregistroid.rkt")
+(require "TDAacceso.rkt")
 (require "TDAlistaaccesos.rkt")
 
 
@@ -90,8 +91,21 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
   )
 
 ; Modificadores
-;(define (agregarTexto))
+; Agregar texto al final del documento
+; Dominio = document X string
+(define (agregarTexto documento texto)
+  (document
+   (obtenerFechaDocumento documento)
+   (obtenerNombreDocumento documento)
+   (string-append (obtenerContenidoDocumento documento) texto) ; Aqui hacer el cambio
+   (obtenerCreadorDocumento documento)
+   (obtenerListaAccesos documento)
+   (+ (obtenerIdDocumento documento) 1) ; Crear un nuevo id
+   )
+  )
 
+
+#|
 ; Agregar un permiso
 (define (agregarPermiso documento acceso)
   (document
@@ -102,6 +116,7 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
    (agregarAcceso (obtenerListaAccesos documento) acceso)
    (obtenerIdDocumento documento))
   )
+|#
 ; Quitar un permiso
 ; Otras operaciones
 
@@ -112,4 +127,4 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
 (provide document)
 (provide document?)
 (provide obtenerFechaDocumento obtenerNombreDocumento obtenerContenidoDocumento obtenerCreadorDocumento obtenerListaAccesos obtenerListaAccesos)
-(provide obtenerIdDocumento)
+(provide obtenerIdDocumento agregarTexto)

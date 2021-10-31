@@ -27,6 +27,9 @@
       )
   )
 
+
+
+
 ; Selectores
 ; Obtener acceso dado el nombre del usuario
 (define (obtenerAcceso lista_accesos nombre)
@@ -37,6 +40,11 @@
           (obtenerAcceso (cdr lista_accesos) nombre)
           )
       )
+  )
+
+; Obtener primer acceso
+(define (obtenerPrimerAcceso lista_acceso)
+  (list-ref lista_acceso 0)
   )
 
 ; Obtener que tipo de acceso tiene tal usuario buscando por nombre
@@ -56,6 +64,10 @@
       )
   )
 |#
+(define (eliminarPrimerAcceso lista_acceso)
+  (cdr lista_acceso)
+  )
+
 (define (agregarAcceso lista_accesos acceso)
   (if (null? lista_accesos)
       (cons acceso null)
@@ -64,8 +76,20 @@
   )
 
 
+; Verifica si el usuario tiene un acceso dentro de la lista
+(define (tienePermiso lista_accesos nombreUsuario tipoPermiso)
+  (if (null? lista_accesos)
+      #f
+      (if (and
+           (eqv? (obtenerNombreAc(obtenerPrimerAcceso lista_accesos)) nombreUsuario)
+           (eqv? (obtenerNombreAc(obtenerPrimerAcceso lista_accesos)) tipoPermiso))
+          #t
+          (tienePermiso (cdr lista_accesos) nombreUsuario tipoPermiso)
+          )
+      )
+  )
 (define permiso1 (access "daniel" #\w))
 (define accesoPrim (accesess permiso1))
 
-(provide accesess accesess? obtenerAcceso obtenerTipoAcceso agregarAcceso)
+(provide accesess accesess? obtenerAcceso obtenerTipoAcceso agregarAcceso tienePermiso)
 

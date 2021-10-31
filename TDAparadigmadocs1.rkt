@@ -14,6 +14,18 @@
   (list->string (reverse (string->list texto)))
   )
 
+; Encriptar el texto de un documento
+(define (encriptarDocumento encriptador documento)
+  (document
+   (obtenerFechaDocumento documento)
+   (obtenerNombreDocumento documento)
+   (encriptador (obtenerContenidoDocumento documento)) ; Aqui hacer el cambio -> encriptar
+   (obtenerCreadorDocumento documento)
+   (obtenerListaAccesos documento)
+   (obtenerIdDocumento documento)
+   )
+  )
+
 ; Desencriptador
 (define (desencriptador texto)
   (encriptador texto)
@@ -347,23 +359,41 @@ Recorrido = paradigmadocs|#
 (define add
   (lambda(paradoc)
     (lambda(idDoc fecha contenidoTexto)
-    ; Cuerpo de la función
-    (paradigmadocsImplicito
-     (obtenerNombreDocs paradoc)
-     (obtenerFechaDocs paradoc)
-     (obtenerEncryptDocs paradoc)
-     (obtenerDecryptDocs paradoc)
-     (obtenerListaUsersDoc paradoc) 
-     (obtenerListaDocumentsDoc paradoc)
-     (obtenerSesionActivaDoc paradoc)
-     
+      ; Cuerpo de la función
+      ; Comprobar que se puede escribir en el documento
+      (if
+       ; Condición -> que tenga permiso de escritura sobre el documento
+       (tienePermiso ; Aqui hay problemas
+        (obtenerListaAccesos (buscarDocumento (obtenerListaDocumentsDoc paradoc) idDoc))
+        (obtenerNombre (obtenerSesionActivaDoc paradoc))
+        #\w ; -> Permiso de escritura
+        )
 
-     )
+          
+       ; Caso verdadero
+       (paradigmadocsImplicito
+        (obtenerNombreDocs paradoc)
+        fecha
+        (obtenerEncryptDocs paradoc)
+        (obtenerDecryptDocs paradoc)
+        (obtenerListaUsersDoc paradoc) 
+        (reemplazarDocumentoDoc ; Cambiar la lista actualizando un documento en especifico
+         paradoc
+         (buscarDocumento (obtenerListaDocumentsDoc paradoc) idDoc) ; Documento inicial -> buscado
+         (encriptarDocumento (obtenerEncryptDocs paradoc) (agregarTexto (buscarDocumento (obtenerListaDocumentsDoc paradoc) idDoc) contenidoTexto)))
+        (obtenerSesionActivaDoc paradoc)
+        )
+
+       ; Caso falso
+       paradoc
+
+       )
+      )
     )
   )
-  )
 
-
+; (encriptarDocumento (obtenerEncryptDocs paradoc) (agregarTexto (buscarDocumento (obtenerListaDocumentsDoc paradoc) idDoc) contenidoTexto))
+; esta linea agrega texto y encripta
 
 ; Función para imprimir
 ; Para mostrar todo el sistema con toda la información
@@ -377,7 +407,7 @@ Recorrido = paradigmadocs|#
     (write "Sesion activa: ") (write (obtenerSesionActivaDoc base)) (newline)
     ) 
   )
-; Para mostrar la información de un documento
+
 (define (printDocumento documento)
   (begin0
     (write "Nombre del archivo: ") (write (obtenerNombreDocumento documento)) (newline)
@@ -423,6 +453,7 @@ Recorrido = paradigmadocs|#
 ;agregarDocumentoDoc paradoc documento
 (define sistema4 (agregarDocumentoDoc sistema3 null_document2))
 (define sistema5 ((login sistema4 "daniel" "123" create) fecha "primerdoc" "hola XD"))
-;(define sistema6 ((login sistema5 "daniel" "123" share) 2 (access "fran" #\r)))
+(define sistema6 ((login sistema5 "daniel" "123" share) 2 (access "fran" #\w)))
+;(define sistema6 ((login sistema5 "daniel" "123" share) 2 (access "fran" #\w)))
 (define printSistema5 (printSistema sistema5))
 (define LISTADOCUMENTOS (obtenerListaDocumentsDoc sistema5))
