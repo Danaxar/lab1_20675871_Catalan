@@ -25,9 +25,9 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
 ; DEJAR PARA DESPUÉS
 
 (define (document fecha nombreDoc contenido creador accesos id)
-  (if (and 
-       (string? nombreDoc) 
+  (if (and
        (fecha? fecha) 
+       (string? nombreDoc)
        (string? contenido)
        (user? creador) ; -> sesión activa
        (accesess? accesos)

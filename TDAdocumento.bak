@@ -1,17 +1,10 @@
 #lang racket
 ; TDA documento
 (require "TDAfecha.rkt")
+(require "TDAusuario.rkt")
+(require "TDAregistroid.rkt")
+(require "TDAlistaaccesos.rkt")
 
-
-; Cosas que debe contener un documento:
-; Texto albergado            -> TDA texto
-; Fecha de creación          -> tda fecha
-; Modificación               -> palabras
-; ID único incremental  (se va generando un correlativo a partir de del último documento o versión creada)
-;                            -> numero entero
-; Version -> numero entero
-; Historial de Versiones     -> lista de tda documento
-; Usuarios que tienen acceso -> lista de tda usuarios
 
 
 ; Implementación:
@@ -20,46 +13,103 @@
 ; Constructores
 ; Función que construye un tda documento
 ; Dominio: string x fecha x entero x (list integer) x (list tda user)
-(define (document texto fecha id historial lista_UsuariosAcceso)
-    (if (and
-            (string? texto)
-            (fecha? fecha)
-            (integer? id)
-            ; Agregar algo que verifique que toda la lista de documentos sean de documentos
-            #|
-            (if (= (length historial) 0)
-                null
-                (map (document? historial))
-            )
-            |#
-            (map user? lista_UsuariosAcceso)
-        )
 
-        ; Caso verdadero
-        (list texto fecha id historial lista_UsuariosAcceso)
-        ; Caso falso
-        null
-    )
-)
+#|En versionesAnteriores se puede pensar como que en ese parametro ya existen los mismos
+parametros escritos en la función, por lo que debe ser una lista, entonces esta lista hay
+que juntarla como elemento único con los mismos parametros que se están ingresando acá|#
+
+#|Otra forma de verlo es que este constructor solo se encarga de consolidar o agrupar los datos
+la forma en la que se van a obtener las versiones anteriores va a ser otro tema|#
+
+
+; DEJAR PARA DESPUÉS
+
+(define (document fecha nombreDoc contenido creador accesos id)
+  (if (and 
+       (string? nombreDoc) 
+       (fecha? fecha) 
+       (string? contenido)
+       (user? creador) ; -> sesión activa
+       (accesess? accesos)
+       (integer? id)
+       )
+      (list fecha nombreDoc contenido creador accesos id)
+      null
+      )
+  )
+
 ; Pertenencia
 ; Función que verifica si el parametro de entrada es un documento
-; Dominio: documento
-; Recorrido: boolean
 (define (document? documento)
-    (if (and 
-            (= (length documento) 5)
-            (string? (car documento))
-            (fecha? (cadr documento))
-            (integer? (caddr documento))
-            (map integer? (cadddr documento))
-            (map user? (car (cdr (cdr (cdr(cdr documento))))))
-        )
-        #t
-        #f
-    )
-)
+  (if (= (length documento) 6)
+      (if
+       ; Condiciones
+       (and (fecha? (list-ref documento 0))
+            ( string?(list-ref documento 1))
+            (string? (list-ref documento 2))
+            (user? (list-ref documento 3))
+            (accesess? (list-ref documento 4))
+            (integer? (list-ref documento 5))
+            )
+
+       #t
+       #f
+       )
+      
+      #f
+      )
+  )
+
+
+
 
 ; Selectores
+; Obtener la fecha del documento
+(define (obtenerFechaDocumento documento)
+  (list-ref documento 0)
+  )
+; Obtener el nombre del documento
+(define (obtenerNombreDocumento documento)
+  (list-ref documento 1)
+  )
+; Obtener el contenido del documento
+(define (obtenerContenidoDocumento documento)
+  (list-ref documento 2)
+  )
+; Obtener el creador del documento
+(define (obtenerCreadorDocumento documento)
+  (list-ref documento 3)
+  )
+; Obtener la lista de accesos del documento (lista de usuarios)
+(define (obtenerListaAccesos documento)
+  (list-ref documento 4)
+  )
+; Obtener id del documento
+(define (obtenerIdDocumento documento)
+  (list-ref documento 5)
+  )
 
 ; Modificadores
+;(define (agregarTexto))
+
+; Agregar un permiso
+(define (agregarPermiso documento acceso)
+  (document
+   (obtenerFechaDocumento documento)
+   (obtenerNombreDocumento documento)
+   (obtenerContenidoDocumento documento)
+   (obtenerCreadorDocumento documento)
+   (agregarAcceso (obtenerListaAccesos documento) acceso)
+   (obtenerIdDocumento documento))
+  )
+; Quitar un permiso
 ; Otras operaciones
+
+
+;(define documentoPrueba (document ))
+
+; Exportar
+(provide document)
+(provide document?)
+(provide obtenerFechaDocumento obtenerNombreDocumento obtenerContenidoDocumento obtenerCreadorDocumento obtenerListaAccesos obtenerListaAccesos)
+(provide obtenerIdDocumento)

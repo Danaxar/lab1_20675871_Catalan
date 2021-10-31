@@ -1,35 +1,12 @@
 #lang racket
-
 (require "TDAfecha.rkt")
-
 (require "TDAusuario.rkt")
-
 (require "TDAregistroid.rkt")
-
 (require "TDAlistausuario.rkt")
-
 (require "TDAdocumento.rkt")
-
 (require "TDAlistadocumento.rkt")
-
 (require "TDAacceso.rkt")
 (require "TDAlistaaccesos.rkt")
-
-
-
-#|
-Cosas que contiene el paradigmadocs
-    Parametros de función (explicitos)
-        Nombre del sistema
-        Fecha
-        Función encriptadora
-        Función desencriptadora
-    
-    Funciones internas (implicitas) ; -> hace llamado dentro del mismo código
-        Lista de documentos totales
-        Lista de usuarios registrados
-
-|#
 
 ; Otras funciones
 ; Encriptador
@@ -58,11 +35,20 @@ Cosas que contiene el paradigmadocs
          encryptFunction decryptFunction
          lista_usuarios lista_documentos userActivo)
   
-  (list name date encryptFunction decryptFunction lista_usuarios lista_documentos userActivo)
+  (list
+   name
+   date
+   encryptFunction
+   decryptFunction
+   lista_usuarios
+   lista_documentos
+   userActivo)
   
   )
 
 ; Pertenencia
+; Evalua si el parametro es un paradigmadocs
+; NO TERMINADO
 (define (paradigmadocs? base)
   (if (and (string? (list-ref base 0))
            (fecha? (list-ref base 1))
@@ -241,7 +227,8 @@ Recorrido = paradigmadocs
       )
   )
 
-
+; Reemplaza un documento por otro
+; Dominio = paradigmadocs X document X document
 (define (reemplazarDocumentoDoc paradoc documentoInicial documentoFinal)
   (if (and (paradigmadocs? paradoc) (document? documentoFinal))
       ; Caso verdadero
@@ -251,13 +238,14 @@ Recorrido = paradigmadocs
        (obtenerEncryptDocs paradoc)
        (obtenerDecryptDocs paradoc)
        (obtenerListaUsersDoc paradoc) 
-       (reemplazarDocumento (obtenerListaDocumentsDoc paradoc) documentoInicial documentoFinal)
+       (reemplazarDocumento (obtenerListaDocumentsDoc paradoc) documentoInicial documentoFinal) ; Borra y agrega
        (obtenerSesionActivaDoc paradoc)
        )
       ; Caso falso
       paradoc
       )
   )
+
 
 
 ; 1) FUNCIÓN REGISTER
@@ -272,29 +260,7 @@ Recorrido = paradigmadocs
       )
   
   )
-
 ; 2) FUNCIÓN LOGIN
-#|
-(define (login paradoc username password function)
-  (if (paradigmadocs? paradoc)
-      ; Caso verdadero
-      (if (and (string? username) (string? password))
-          ; Caso verdadero
-          (if (existeUser? (obtenerListaUsersDoc paradoc) (user username password))
-              ; Caso verdadero
-              function
-              ; Caso falso
-              (write "El usuario no se encuentra registrado")
-              )
-          ; Caso falso
-          (write "Datos de usuario invalidos")
-          )
-      ; Caso falso
-      (write "El sistema ingresado es incorrecto")
-      )
-  )
-|#
-
 (define login (lambda (paradoc username password function)
                 ; Caso verdadero
                 (if (and (string? username) (string? password) (paradigmadocs? paradoc)) ; Verificar entrada
@@ -316,17 +282,6 @@ Recorrido = paradigmadocs
 ; Función que le permite al usuario con una sesión iniciada crear un nuevo documento
 ; Dominio = paradoc X fecha X string X string
 ; Recorrido = paradigmasdocs
-#|
-(define (create paradoc  fecha nombreDoc contenido)
-  (if (and (fecha? fecha) (string? nombreDoc) (string? contenido))
-      (agregarDocumentoDoc paradoc (document fecha nombreDoc contenido)) ; Retorna paradoc actualizado
-      paradoc
-  )
-)
-
-|#
-
-; Hacer una función currificada para favorecer el lazy
 (define create
   (lambda (paradoc)
     (lambda (fecha nombreDoc contenido)
@@ -349,77 +304,91 @@ Recorrido = paradigmadocs
       )
     )
   )
-
-
-
-
 ; 4) FUNCIÓN SHARE
 #|Función que permite compartir el documento con otros usuarios especificando
 el tipo de acceso (lectura, escritura, comentarios)
 Dominio = paradigmadocs X integer X accessList (o lista de usuarios)
-Recorrido = 
+Recorrido = paradigmadocs
 |#
-
-
-#|
-(define (paradigmadocsImplicito
-         name date
-         encryptFunction decryptFunction
-         lista_usuarios lista_documentos userActivo))
-|#
-
-
-
-
 (define share
   (lambda (paradoc)
     (lambda (idDocumento acceso . accesses)
+      ; Cuerpo de la función
       (if (null? accesses) ; Si solo hay un acceso
           ; t -> solo un acceso
           (reemplazarDocumentoDoc
-           paradoc
+           paradoc ; Sistema
            (buscarDocumento (obtenerListaDocumentsDoc paradoc) idDocumento) ; Documento inicial
            ; Documento final
            (document
-            (obtenerFechaDocumento paradoc)
+            (obtenerFechaDocumento (buscarDocumento (obtenerListaDocumentsDoc paradoc) idDocumento))
             (obtenerNombreDocumento (buscarDocumento (obtenerListaDocumentsDoc paradoc) idDocumento))
             (obtenerContenidoDocumento (buscarDocumento (obtenerListaDocumentsDoc paradoc) idDocumento))
             (obtenerCreadorDocumento (buscarDocumento (obtenerListaDocumentsDoc paradoc) idDocumento))
             (agregarAcceso (obtenerListaAccesos (buscarDocumento (obtenerListaDocumentsDoc paradoc) idDocumento)) acceso)
-            (+ idDocumento 1)
+            idDocumento
             )
            
            )
+          
           ; f -> más de un acceso
           null
           )
       )
+    )
+  )
+
+#|5) Función add
+Función que permite que permite añadir texto al final del documento solo a
+los que tengan acceso de escritura sobre el documento (propietario y extenos autorizados)
+Dominio = paradigmadocs X int X date X String
+Recorrido = paradigmadocs|#
+
+(define add
+  (lambda(paradoc)
+    (lambda(idDoc fecha contenidoTexto)
+    ; Cuerpo de la función
+    (paradigmadocsImplicito
+     (obtenerNombreDocs paradoc)
+     (obtenerFechaDocs paradoc)
+     (obtenerEncryptDocs paradoc)
+     (obtenerDecryptDocs paradoc)
+     (obtenerListaUsersDoc paradoc) 
+     (obtenerListaDocumentsDoc paradoc)
+     (obtenerSesionActivaDoc paradoc)
+     
+
+     )
+    )
   )
   )
 
 
 
-
-
-
-
-
-; Función para imprimir el sistema
+; Función para imprimir
+; Para mostrar todo el sistema con toda la información
 (define (printSistema base)
   (begin0
     (write (obtenerNombreDocs base)) (newline)
     (write "Fecha: ") (write (obtenerFechaDocs base)) (newline)
     (write "Usuarios registrados:")
     (write (obtenerListaUsersDoc base)) (newline)
-    (write "Lista de documentos") (write (obtenerListaDocumentsDoc base)) (newline)
-    (write "Sesion activa") (write (obtenerSesionActivaDoc base)) (newline)
+    (write "Lista de documentos :") (write (obtenerListaDocumentsDoc base)) (newline)
+    (write "Sesion activa: ") (write (obtenerSesionActivaDoc base)) (newline)
     ) 
   )
-
-
-
-
-
+; Para mostrar la información de un documento
+(define (printDocumento documento)
+  (begin0
+    (write "Nombre del archivo: ") (write (obtenerNombreDocumento documento)) (newline)
+    (write "Autor: ") (write (obtenerCreadorDocumento documento)) (newline)
+    (write "Permisos: ") (write (obtenerListaAccesos documento)) (newline)
+    (write "Fecha: ") (write (obtenerFechaDocumento documento)) (newline)
+    ; Contenido
+    (write "Contenido: ") (newline)
+    (write (obtenerContenidoDocumento documento)) (newline)
+    )
+  )
 
 
 (define fecha (date 4 11 2021))
@@ -453,4 +422,7 @@ Recorrido =
 (define sistema3 (register sistema2 fecha "fran" "123"))
 ;agregarDocumentoDoc paradoc documento
 (define sistema4 (agregarDocumentoDoc sistema3 null_document2))
-(define LISTADOCUMENTOS (obtenerListaDocumentsDoc sistema4))
+(define sistema5 ((login sistema4 "daniel" "123" create) fecha "primerdoc" "hola XD"))
+;(define sistema6 ((login sistema5 "daniel" "123" share) 2 (access "fran" #\r)))
+(define printSistema5 (printSistema sistema5))
+(define LISTADOCUMENTOS (obtenerListaDocumentsDoc sistema5))

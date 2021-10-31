@@ -3,11 +3,17 @@
 ;TDA lista de accesess
 
 ; Constructor
-(define (accesess acceso)
-  (if (access? acceso)
-      (list acceso)
-      null
+(define (accesess acceso . demas)
+  (if (null? demas)
+      ; Si solo hay un acceso
+      (if (access? acceso)
+          (list acceso)
+          null
+          )
+      ; Si hay más
+      (list acceso demas)
       )
+  
   )
 
 ; Pertenencia
@@ -27,13 +33,13 @@
   (if (null? lista_accesos)
       null
       (if (eqv? nombre (obtenerNombreAc (car lista_accesos))) ; Si el nombre buscado coincide con el acceso n
-            (car lista_accesos)   
+          (car lista_accesos)   
           (obtenerAcceso (cdr lista_accesos) nombre)
           )
+      )
   )
-)
-; Obtener que tipo de acceso tiene tal usuario buscando por nombre
 
+; Obtener que tipo de acceso tiene tal usuario buscando por nombre
 (define (obtenerTipoAcceso lista_accesos nombre)
   (obtenerPermisoAc ; Saco el permiso
    (obtenerAcceso lista_accesos nombre) ; Obtengo el acceso
@@ -42,10 +48,18 @@
 
 ; Modificadores
 ; Agregar acceso a la lista
+#| versión anterior
 (define (agregarAcceso lista_accesos acceso)
   (if (accesess? lista_accesos)
       (append lista_accesos acceso)
       null
+      )
+  )
+|#
+(define (agregarAcceso lista_accesos acceso)
+  (if (null? lista_accesos)
+      (cons acceso null)
+      (cons (car lista_accesos) (agregarAcceso (cdr lista_accesos) acceso))
       )
   )
 
