@@ -397,13 +397,13 @@ Recorrido = paradigmadocs|#
 
 ; Función para imprimir
 ; Para mostrar todo el sistema con toda la información
-(define (printSistema base)
+(define (ps base)
   (begin0
     (write (obtenerNombreDocs base)) (newline)
     (write "Fecha: ") (write (obtenerFechaDocs base)) (newline)
     (write "Usuarios registrados:")
-    (write (obtenerListaUsersDoc base)) (newline)
-    (write "Lista de documentos :") (write (obtenerListaDocumentsDoc base)) (newline)
+    (write (obtenerListaUsersDoc base)) (newline) (newline)
+    (write "Lista de documentos :") (write (obtenerListaDocumentsDoc base)) (newline) (newline)
     (write "Sesion activa: ") (write (obtenerSesionActivaDoc base)) (newline)
     ) 
   )
@@ -420,40 +420,31 @@ Recorrido = paradigmadocs|#
     )
   )
 
-
+#|   MAIN     |#
 (define fecha (date 4 11 2021))
 (define administrador (user "admin" "usach"))
-(define administrador2 (user "admin2" "usach"))
 (define lista_usuarios (crearListaUsuario administrador))
-(define lista_usuarios2 (agregarUser lista_usuarios administrador2))
 
 (define null_document
-  (document
-   fecha " " " " administrador
-   (accesess (access (obtenerNombre administrador) #\w))
-   0
-   )
+  (document fecha " " " " administrador
+            (accesess (access (obtenerNombre administrador) #\w))0
+            )
   )
 
-(define null_document2
-  (document
-   fecha "-" "-" administrador2
-   (accesess (access (obtenerNombre administrador2) #\w))
-   1
-   )
-  )
 
+
+
+; Constantes: Necesarios para el constructor paradigmadocs
 (define lista_documentos (crearListaDocumento null_document))
 (define userActivo (user "admin" "usach"))
 
 ; Sistema inicial
-(define sistema (paradigmadocs "paradoc" fecha encriptador desencriptador))
-(define sistema2 (register sistema fecha "daniel" "123"))
-(define sistema3 (register sistema2 fecha "fran" "123"))
-;agregarDocumentoDoc paradoc documento
-(define sistema4 (agregarDocumentoDoc sistema3 null_document2))
-(define sistema5 ((login sistema4 "daniel" "123" create) fecha "primerdoc" "hola XD"))
-(define sistema6 ((login sistema5 "daniel" "123" share) 2 (access "fran" #\w)))
-;(define sistema6 ((login sistema5 "daniel" "123" share) 2 (access "fran" #\w)))
-(define printSistema5 (printSistema sistema5))
-(define LISTADOCUMENTOS (obtenerListaDocumentsDoc sistema5))
+(define sistema (paradigmadocs "paradoc" fecha encriptador desencriptador)) ; -> Inicialización del tda paradigmadocs
+(define sistema2 (register sistema fecha "daniel" "123")) ; Registrandome en el sistema
+(define sistema3 ((login sistema2 "daniel" "123" create) fecha "primerdoc" "hola XD")) ; Creando el primer documento
+(define sistema4 ((login sistema3 "daniel" "123" share) 1 (access "fran" #\w))) ; Compartiendo el documento
+
+; En desarrollo
+(define sistema5
+  ((login sistema4 "daniel" "123" add) ; Esto funciona
+   1 fecha "ESTO ESTÁ AGREGADO"))
