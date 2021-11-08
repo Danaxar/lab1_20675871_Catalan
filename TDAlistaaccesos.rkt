@@ -75,6 +75,15 @@
       )
   )
 
+(define (agregarAcceso2 lista_accesos acceso demas)
+  (if (null? demas)
+      ; V -> Solo hay un acceso
+      (append lista_accesos (cons acceso null))
+      ; F -> Hay más de un acceso
+      (append lista_accesos (cons acceso null) demas)
+      )
+  )
+
 
 ; Verifica si el usuario tiene un acceso dentro de la lista
 (define (tienePermiso lista_accesos nombreUsuario tipoPermiso)
@@ -88,8 +97,12 @@
           )
       )
   )
+
 (define permiso1 (access "daniel" #\w))
+(define permiso2 (access "fran" #\r))
+(define permiso3 (access "paula" #\c))
 (define accesoPrim (accesess permiso1))
 
 (provide accesess accesess? obtenerAcceso obtenerTipoAcceso agregarAcceso tienePermiso)
+(provide agregarAcceso2)
 

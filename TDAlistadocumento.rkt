@@ -83,11 +83,22 @@
     )
 )
 
-; Reemplazar un documento
-
+#|Función de reemplazo inicial   
+; Reemplazar un documento -> Aqui está el error! Lo hace mal
 (define (reemplazarDocumento lista_documentos documentoInicial documentoFinal)
   (append (remove documentoInicial lista_documentos) documentoFinal)
   )
+|#
+
+; Función de reemplazo en mejora
+(define (reemplazarDocumento lista_documentos documentoInicial documentoFinal)
+  (append
+   (remove documentoInicial lista_documentos) ; Esto retorna la lista sin el elemento
+   (list documentoFinal) ; Lo junto con el documento final
+   )
+  )
+
+
 #|
 ; Tengo que practicar el uso de . en las funciones
 (define (agregarPermisoDoc lista_documentos documento acceso)
@@ -96,3 +107,4 @@
 |#
 (provide crearListaDocumento listaDocumento? obtenerDocumento agregarDocumento)
 (provide obtenerUltimoDocumento obtenerIndiceDocumento reemplazarDocumento buscarDocumento)
+(provide obtenerPrimerDocumento)
