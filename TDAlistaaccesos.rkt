@@ -89,10 +89,18 @@
 (define (tienePermiso lista_accesos nombreUsuario tipoPermiso)
   (if (null? lista_accesos)
       #f
-      (if (and
-           (eqv? (obtenerNombreAc(obtenerPrimerAcceso lista_accesos)) nombreUsuario)
-           (eqv? (obtenerNombreAc(obtenerPrimerAcceso lista_accesos)) tipoPermiso))
+      (if (and 
+           (eqv? ; Si los nombres son iguales
+            (obtenerNombreAc(obtenerPrimerAcceso lista_accesos))
+            nombreUsuario
+            )
+           (eqv? ; Y si 
+            (obtenerPermisoAc(obtenerPrimerAcceso lista_accesos))
+            tipoPermiso)
+           )
+          ; T
           #t
+          ; F -> Seguir recorriendo
           (tienePermiso (cdr lista_accesos) nombreUsuario tipoPermiso)
           )
       )
@@ -102,6 +110,8 @@
 (define permiso2 (access "fran" #\r))
 (define permiso3 (access "paula" #\c))
 (define accesoPrim (accesess permiso1))
+
+(define listtXD (list (cons "daniel" #\w) (cons "fran" #\w) (cons "admin" #\w)))
 
 (provide accesess accesess? obtenerAcceso obtenerTipoAcceso agregarAcceso tienePermiso)
 (provide agregarAcceso2)
