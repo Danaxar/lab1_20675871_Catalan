@@ -25,7 +25,7 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
 
 ; DEJAR PARA DESPUÉS
 
-(define (document fecha nombreDoc contenido creador accesos id)
+(define (document fecha nombreDoc contenido creador accesos id idAnt)
   (if (and
        (fecha? fecha) 
        (string? nombreDoc)
@@ -33,8 +33,9 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
        (user? creador) ; -> sesión activa
        (accesess? accesos)
        (integer? id)
+       (integer? idAnt)
        )
-      (list fecha nombreDoc contenido creador accesos id)
+      (list fecha nombreDoc contenido creador accesos id idAnt)
       null
       )
   )
@@ -42,7 +43,8 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
 ; Pertenencia
 ; Función que verifica si el parametro de entrada es un documento
 (define (document? documento)
-  (if (= (length documento) 6)
+  (if (= (length documento) 7)
+      ; Verdadero
       (if
        ; Condiciones
        (and (fecha? (list-ref documento 0))
@@ -51,13 +53,14 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
             (user? (list-ref documento 3))
             (accesess? (list-ref documento 4))
             (integer? (list-ref documento 5))
+            (integer? (list-ref documento 6))
             )
 
-       #t
-       #f
+       #t ; Verdadero
+       #f ; Falso
        )
       
-      #f
+      #f ; Falso
       )
   )
 
@@ -90,6 +93,11 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
   (list-ref documento 5)
   )
 
+; Obtener id anterior del documento
+(define (obtenerIdAntDocumento documento)
+  (list-ref documento 6)
+  )
+
 ; Modificadores
 ; Agregar texto al final del documento
 ; Dominio = document X string
@@ -101,8 +109,10 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
    (obtenerCreadorDocumento documento)
    (obtenerListaAccesos documento)
    (+ (obtenerIdDocumento documento) 1) ; Crear un nuevo id
+   (obtenerIdDocumento documento)
    )
   )
+
 
 
 #|
@@ -120,11 +130,19 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
 ; Quitar un permiso
 ; Otras operaciones
 
+; Confirmar si un usuario es propietario del documento
+(define (propietario? documento usuario)
+  (if (eqv? (obtenerCreadorDocumento documento) usuario)
+      #t
+      #f
+      )
+  )
+(provide propietario?)
 
-;(define documentoPrueba (document ))
+
 
 ; Exportar
 (provide document)
 (provide document?)
 (provide obtenerFechaDocumento obtenerNombreDocumento obtenerContenidoDocumento obtenerCreadorDocumento obtenerListaAccesos obtenerListaAccesos)
-(provide obtenerIdDocumento agregarTexto)
+(provide obtenerIdDocumento agregarTexto obtenerIdAntDocumento)
