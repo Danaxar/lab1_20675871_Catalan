@@ -130,6 +130,10 @@
       )
   )
 
+(define (eliminarDocumento lista doc)
+  (remove doc lista)
+  )
+
 ; (buscarDocumento lista_documentos id)
 ; Retornar la versión anterior de un documento
 (define (versionAnteriorDocumento lista_documentos id)
@@ -138,6 +142,8 @@
    (obtenerIdAntDocumento (buscarDocumento lista_documentos id)) ; id
    )
   )
+
+
 
 ; Eliminar todas las versiones superiores hasta llegar al id indicado (restaurar versión)
 ; Usando recursión natural
@@ -154,71 +160,49 @@ Condiciones para eliminar un documento:
         Si el id es mayor que el buscado
             Quitar el documento de la lista
 |#
-#|
-(define (restaurarVersionDocumento lista_documentos idDoc version lista2)
-  (if
-   (eqv? ; Comparar nombres    
-    (obtenerNombreDocumento ; Nombre primer documento
-     (obtenerPrimerDocumento lista_documentos))
-    (obtenerNombreDocumento ; Nombre documento buscado
-     (buscarDocumento lista_documentos idDoc))
-    )
-    
-   ; V  -> Comparar ids
-   (if
-    ; Comparar ids
-    (> ; Si el id del primer documento es mayor -> borrar
-     (obtenerIdDocumento (obtenerPrimerDocumento lista_documentos)) ; Primer documento
-     (obtenerIdDocumento (buscarDocumento lista_documento idDoc)) ; Documento buscado
-     )
-    ; V -> Caso arbitrario -> borrar
-    (restaurarVersionDocumento
-     (remove ; lista
-      (obtenerPrimerDocumento lista_documentos)
-      lista_documentos)
-     idDoc ; idDoc
-     version ; Version
-     )
-    
-    ; F -> 
-    
-   
-       
-    )
-   )
-  )
-|#
 
 ; Asumiendo que existe el id
 (define (restaurarVersionDocumento lista1 idDoc version)
   ; Encapsulación
   (define (restaurarVersionDocumentoEncapsulado lista1 idDoc version lista2 contador)
     ; Cuerpo de la función
-    (if
-     (eqv? ; Comparar nombres    
-      (obtenerNombreDocumento (obtenerPrimerDocumento lista1)) ; Nombre primer documento
-      (obtenerNombreDocumento (buscarDocumento lista2 idDoc )) ; Nombre documento buscado
-      )
+    (if (null? lista1)
+        ; V -> Terminó de recorrer
+        lista2
+        
+        ; F -> Seguir recorriendo
+        (if (eqv? ; Comparar nombres    
+             (obtenerNombreDocumento (obtenerPrimerDocumento lista1)) ; Nombre primer documento
+             (obtenerNombreDocumento (buscarDocumento lista2 idDoc )) ; Nombre documento buscado
+             )
     
-     ; V  -> Comparar ids
-     (if
-      (> ; Si el id del primer documento es mayor -> borrar
-       (obtenerIdDocumento (obtenerPrimerDocumento lista1)) ; Primer documento
-       (obtenerIdDocumento (buscarDocumento lista2 idDoc)) ; Documento buscado
-       )
-      ; V -> Quitar elemento
-      (restaurarVersionDocumentoEncapsulado
-       (cdr lista1) ; Recorrer documento
-       idDoc version
-       (remove (obtenerDocumento lista2 contador) lista2)
-       contador
-       )
-      ; F -> Es igual
-      lista2
-      )
-     ; F -> Seguir recorriendo
-     (restaurarVersionDocumentoEncapsulado (cdr lista1) idDoc version lista2 (+ contador 1))
-     )
+            ; V  -> Comparar ids
+            (if (> ; Si el id del primer documento es mayor -> borrar
+                 (obtenerIdDocumento (obtenerPrimerDocumento lista1)) ; Primer documento
+                 (obtenerIdDocumento (buscarDocumento lista2 idDoc)) ; Documento buscado
+                 )
+                
+                ; V -> Quitar elemento
+                (restaurarVersionDocumentoEncapsulado
+                 (cdr lista1) ; Recorrer documento
+                 idDoc version
+                 (remove (obtenerDocumento lista2 contador) lista2)
+                 contador
+                 )
+                
+                ; F -> Es igual
+                lista2
+                )
+            
+            ; F -> Seguir recorriendo
+            (restaurarVersionDocumentoEncapsulado (cdr lista1) idDoc version lista2 (+ contador 1))
+            )
+        
+        )
+
+
+    
+    
     )
   ; Llamado a la función
   (restaurarVersionDocumentoEncapsulado lista1 idDoc version lista1 0)

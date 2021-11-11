@@ -132,7 +132,7 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
 
 ; Confirmar si un usuario es propietario del documento
 (define (propietario? documento usuario)
-  (if (eqv? (obtenerCreadorDocumento documento) usuario)
+  (if (eqv? (obtenerNombre (obtenerCreadorDocumento documento)) (obtenerNombre usuario))
       #t
       #f
       )
