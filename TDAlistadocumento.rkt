@@ -122,7 +122,7 @@
     (obtenerPrimerDocumento lista_documentos)))
   )
 
-; Modificadores
+; ------------ Modificadores -----------------------
 (define (agregarDocumento lista documento)
   (if (document? documento)
       (append lista (list documento)) ; Notar el "list" que es clave para que funcione
@@ -210,7 +210,52 @@ Condiciones para eliminar un documento:
 
 (provide restaurarVersionDocumento)
 
+; Quitar permisos de un usuario
+(define (quitarPermisosUsuarios lista_documentos usuario)
+  
+  (define (quitarPermisosUsuariosEncapsulado lista_documentos usuario lista_nueva)
+    ; Cuerpo de función
+    (if
+     ; Si las listas tienen la misma cantidad de elementos
+     (= (length lista_documentos) (length lista_nueva))
+     ; V
+     lista_nueva ; Retorno la nueva lista
+     
+     ; F -> Sigo procesando -> copiar/modificar documentos a la lista nueva
+     (quitarPermisosUsuariosEncapsulado
+      lista_documentos
+      usuario
 
+      (append
+       lista_nueva
+       (list
+        ; Documento modificado o no
+        (if
+         ; Comprar creadores del documento
+         (eqv?
+          (obtenerCreadorDocumento
+           (obtenerPrimerDocumento lista_documentos))
+          usuario
+          )
+         ; V -> Quitar acceso
+         (quitarTodosLosPermisosDocumento (obtenerPrimerDocumento lista_documentos))
+         ; F -> Hacer nada
+         (obtenerPrimerDocumento lista_documentos)
+         )
+        )
+       )
+
+      )
+     
+     )
+    )
+
+
+  
+  ; Llamar a la función
+  (quitarPermisosUsuariosEncapsulado lista_documentos usuario (list))
+  )
+(provide quitarPermisosUsuarios)
 
 
 #|Función de reemplazo inicial   

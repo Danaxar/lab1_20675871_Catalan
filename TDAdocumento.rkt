@@ -114,6 +114,25 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
   )
 
 
+#|Quitar todos los permisos externos de un documento (dejar solo los del propietario|#
+(define (quitarTodosLosPermisosDocumento documento)
+  (document
+   (obtenerFechaDocumento documento)
+   (obtenerNombreDocumento documento)
+   (obtenerContenidoDocumento documento)
+   (obtenerCreadorDocumento documento)
+   (accesess ; Hago una lista de accesos
+    (access
+     (obtenerNombre (obtenerCreadorDocumento documento)) ; Nombre de usuario
+     #\w ; Tipo de permiso -> escritura
+     ))
+   (obtenerIdDocumento documento)
+   (obtenerIdDocumento documento)
+   )
+  )
+(provide quitarTodosLosPermisosDocumento)
+
+
 
 #|
 ; Agregar un permiso
