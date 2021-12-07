@@ -1,12 +1,19 @@
 #lang racket
 (require "TDAusuario.rkt")
 
-; TDA acceso
+; TDA ACCESO
 
-; representación
+; ----------------- REPRESENTACIÓN ------------------------
 ; string X char
 
-; Constructor
+
+
+; ------------------ CONSTRUCTOR ----------------------------
+#|
+Función que construye el tda acceso
+Dominio = string X char
+Recorrido = acceso
+|#
 (define (access nombreUsuario tipoPermiso)
     (if (and (string? nombreUsuario) 
         (or (eqv? tipoPermiso #\r)  ; Lectura
@@ -19,7 +26,14 @@
     )
 )
 
-; Pertenencia
+
+; ------------------ PERTENENCIA ------------------
+#|
+Función que verifica si el argumento dado pertenece al tda acceso o no
+Dominio = access
+Recorrido = boolean
+|#
+
 (define (access? acceso)
   (if (cons? acceso)
       ; Caso verdadero 
@@ -40,8 +54,13 @@
   )
 
 
-; Selectores
-; Obtener el nombre de un acceso
+; ------------------ SELECTORES ------------------
+
+#|
+Función que obtiene el nombre de un acceso
+Dominio = acceso 
+Recorrido = string o null
+|#
 (define (obtenerNombreAc ac)
   (if (access? ac)
       (car ac)
@@ -49,7 +68,11 @@
       )
   )
 
-; Obtener el tipo de permiso de un acceso
+#|
+Función que obtiene el tipo de permiso de un accceso
+Dominio = acceso
+Recorrido = char o null
+|#
 (define (obtenerPermisoAc ac)
   (if (access? ac)
       (cdr ac)
@@ -57,5 +80,15 @@
       )
   )
 
-(define pruebaAcceso (access "daniel" #\r))
+
+; ------------------ OTROS ------------------------------
+#|
+Función que exporta un tda acceso a información en string
+Dominio = access
+Recorrido = string
+|#
+(define (acceso->string acceso)
+  (string-append (obtenerNombreAc acceso) " " (string (obtenerPermisoAc acceso)) " ")
+  )
+(provide acceso->string)
 (provide access access? obtenerNombreAc obtenerPermisoAc)

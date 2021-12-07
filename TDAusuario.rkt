@@ -1,12 +1,12 @@
 #lang racket
 ; TDA USUARIO
 
-; Representacion
+; ----------------- REPRESENTACIÓN ------------------------
 ; (string X entero)
 ; (cons usuario contraseña) 
 
 
-; Constructores
+; ------------------ CONSTRUCTOR ----------------------------
 ; Función que construye el TDA usuario
 ; Dominio: string x entero
 ; Recorrido: par: user
@@ -16,9 +16,9 @@
         null
     )
 )
-; FUNCIONA
 
-; Pertenencia
+
+; ------------------ PERTENENCIA ------------------
 ; Función que evalua si el parametro entrado es un TDA usuario
 ; Dominio: user: string X entero
 ; Recorrido: boolean
@@ -34,7 +34,7 @@
     )
 )
 
-; Selectores
+; ------------------ SELECTORES ------------------
 ; Función que obtiene el nombre de un usuario
 ; Dominio: user: string x entero
 ; Recorrido: string X boolean
@@ -44,7 +44,7 @@
         #f
     )
 )
-; Funciona
+
 
 ; Función que obtiene la contraseña de un usuario
 ; Dominio: user: string x entero
@@ -56,7 +56,7 @@
     )
 )
 
-; Modificadores
+; ------------------ MODIFICADORES ------------------
 ; Función que modifica el nombre de un usuario
 ; Dominio: user: string X entero
 ; Recorrido: user X boolean
@@ -66,7 +66,6 @@
         #f
     )
 )
-; Funciona
 
 ; Función que modifica la contraseña de un usuario
 ; Dominio: user: string X entero
@@ -77,9 +76,18 @@
         #f
     )
 )
-; Funciona
-; Otras operaciones
 
+; ------------------ OTROS -------------------------
+; Exportar usuario como string
+; dominio-> user
+; recorrido-> string
+(define (user->string usuario)
+  (string-append
+   (obtenerNombre usuario) " "
+   (obtenerPass usuario) " "
+   )
+  )
+(provide user->string)
 
 ; Exportar
 (provide user) ; Constructor

@@ -1,30 +1,21 @@
 #lang racket
+
 ; TDA documento
+
 (require "TDAfecha.rkt")
 (require "TDAusuario.rkt")
 (require "TDAregistroid.rkt")
 (require "TDAacceso.rkt")
 (require "TDAlistaaccesos.rkt")
 
+; ----------------- REPRESENTACIÓN ------------------------
+; date X string X string X user X listaAccesos X int X int
 
 
-; Implementación:
-; Representación
-
-; Constructores
+; ------------------ CONSTRUCTOR ----------------------------
 ; Función que construye un tda documento
 ; Dominio: string x fecha x entero x (list integer) x (list tda user)
-
-#|En versionesAnteriores se puede pensar como que en ese parametro ya existen los mismos
-parametros escritos en la función, por lo que debe ser una lista, entonces esta lista hay
-que juntarla como elemento único con los mismos parametros que se están ingresando acá|#
-
-#|Otra forma de verlo es que este constructor solo se encarga de consolidar o agrupar los datos
-la forma en la que se van a obtener las versiones anteriores va a ser otro tema|#
-
-
-; DEJAR PARA DESPUÉS
-
+; Recorrido: document
 (define (document fecha nombreDoc contenido creador accesos id idAnt)
   (if (and
        (fecha? fecha) 
@@ -40,8 +31,10 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
       )
   )
 
-; Pertenencia
+; ------------------ PERTENENCIA ------------------
 ; Función que verifica si el parametro de entrada es un documento
+; Dominio: document
+; Recorrido: boolean
 (define (document? documento)
   (if (= (length documento) 7)
       ; Verdadero
@@ -67,40 +60,61 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
 
 
 
-; Selectores
+; ------------------ SELECTORES ------------------
 ; Obtener la fecha del documento
+; Dominio: document
+; Recorrido: date
 (define (obtenerFechaDocumento documento)
   (list-ref documento 0)
   )
+
 ; Obtener el nombre del documento
+; Dominio: document
+; Recorrido: string
 (define (obtenerNombreDocumento documento)
   (list-ref documento 1)
   )
+
+
 ; Obtener el contenido del documento
+; Dominio: document
+; Recorrido: string
 (define (obtenerContenidoDocumento documento)
   (list-ref documento 2)
   )
+
 ; Obtener el creador del documento
+; Dominio: document
+; Recorrido: user
 (define (obtenerCreadorDocumento documento)
   (list-ref documento 3)
   )
-; Obtener la lista de accesos del documento (lista de usuarios)
+
+; Obtener la lista de accesos del documento
+; Dominio: document
+; Recorrido: listaAccesos
 (define (obtenerListaAccesos documento)
   (list-ref documento 4)
   )
-; Obtener id del documento
+
+; Obtener el id del documento
+; Dominio: document
+; Recorrido: int
 (define (obtenerIdDocumento documento)
   (list-ref documento 5)
   )
 
-; Obtener id anterior del documento
+; Obtener el id de la versión anterior del documento
+; Dominio: document
+; Recorrido: int
 (define (obtenerIdAntDocumento documento)
   (list-ref documento 6)
   )
 
-; Modificadores
+; ------------------ MODIFICADORES ------------------
 ; Agregar texto al final del documento
 ; Dominio = document X string
+; Recorrido = document
 (define (agregarTexto documento texto)
   (document
    (obtenerFechaDocumento documento)
@@ -114,7 +128,10 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
   )
 
 
-#|Quitar todos los permisos externos de un documento (dejar solo los del propietario|#
+#|Quitar todos los permisos externos de un documento (dejar solo los del propietario)
+Dominio = documento
+Recorrido = documento
+|#
 (define (quitarTodosLosPermisosDocumento documento)
   (document
    (obtenerFechaDocumento documento)
@@ -133,23 +150,10 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
 (provide quitarTodosLosPermisosDocumento)
 
 
-
-#|
-; Agregar un permiso
-(define (agregarPermiso documento acceso)
-  (document
-   (obtenerFechaDocumento documento)
-   (obtenerNombreDocumento documento)
-   (obtenerContenidoDocumento documento)
-   (obtenerCreadorDocumento documento)
-   (agregarAcceso (obtenerListaAccesos documento) acceso)
-   (obtenerIdDocumento documento))
-  )
-|#
-; Quitar un permiso
-; Otras operaciones
-
-; Confirmar si un usuario es propietario del documento
+; ------------------ OTROS ------------------------------
+#|Confirmar si un usuario es propietario del documento
+Dominio = document X user
+Recorrido = boolean|#
 (define (propietario? documento usuario)
   (if (eqv? (obtenerNombre (obtenerCreadorDocumento documento)) (obtenerNombre usuario))
       #t
@@ -157,6 +161,36 @@ la forma en la que se van a obtener las versiones anteriores va a ser otro tema|
       )
   )
 (provide propietario?)
+
+#|Exportar información de un documento a string
+Dominio = document X Function
+Recorrido = string|#
+(define (document->string documento desencriptador)
+  (string-append
+   "Documento:\n"
+   ; Nombre
+   "\tNombre del documento: "
+   (obtenerNombreDocumento documento) "\n"
+   ; Fecha
+   "\tFecha de creación: "
+   (fecha->string (obtenerFechaDocumento documento)) "\n"
+   ; Creador
+   "\tCreado por: "
+   (user->string (obtenerCreadorDocumento documento)) "\n"
+   ; Lista de accesos
+   "\tPersonas con acceso:\n"
+   (listaAcceso->string (obtenerListaAccesos documento)) "\n"  
+   ; Id del documento
+   "\tId: "
+   (number->string (obtenerIdDocumento documento)) "\n"
+   "\tId ver. anterior: "
+   (number->string (obtenerIdAntDocumento documento)) "\n"
+   "contenido:\n"
+   (desencriptador (obtenerContenidoDocumento documento)) "\n"
+   )
+  )
+(provide document->string)
+
 
 
 

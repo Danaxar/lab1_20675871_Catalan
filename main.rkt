@@ -14,7 +14,25 @@
 
 
 
+#|FUNCIÓN CONSTRUCTOR PARADIGMADOCS (en archivo paradigmadocs1.rkt
+
+(define (paradigmadocs name date encryptFunction decryptFunction)
+  (if  (fecha? date)
+       (list name date encryptFunction decryptFunction lista_usuarios lista_documentos userActivo)
+       null
+       )
+  )
+(provide paradigmadocs)
+
+
+|#
+
 ; 1) FUNCIÓN REGISTER
+#|
+Función que registra a un usuario en el sistema
+Dominio = paradigmadocs X date X string X string
+Recorrido = paradigmadocs
+|#
 (define (register paradoc date username password)
   (if (and (fecha? date) (string? username) (string? password))
       ; Caso true, cumplen los tipos de dato
@@ -26,7 +44,14 @@
       )
   
   )
+
+
 ; 2) FUNCIÓN LOGIN
+#|
+Función que entrar al usuario al sistema permitiendole ejecutar las funciones del programa
+Dominio = paradigmadocs X string X string X function
+Recorrido = paradigmadocs
+|#
 (define login (lambda (paradoc username password function)
                 ; Caso verdadero
                 (if (and (string? username) (string? password) (paradigmadocs? paradoc)) ; Verificar entrada
@@ -79,6 +104,8 @@
       )
     )
   )
+
+
 ; 4) FUNCIÓN SHARE
 #|Función que permite compartir el documento con otros usuarios especificando
 el tipo de acceso (lectura, escritura, comentarios)
@@ -222,7 +249,11 @@ Recorrido = paradigmadocs|#
 Función que permite al usuario quitar todos los permisos otorgados a los demás ususarios
 registrados en el sistema que no son dueños del documento
 Dominio = paradigmadocs
-Recorrido = paradigmadocs|#
+Recorrido = paradigmadocs
+
+no funciona.
+
+|#
 (define revokeAllAccesses
   (lambda (paradigmadocs)
     ; Cuerpo de la función
@@ -238,7 +269,10 @@ Recorrido = paradigmadocs|#
   )
 
 
-#|8) Función Search|#
+#|8) Función Search
+No realizada
+|#
+
 #|9) Función paradigmas->string
 Función que muestra por pantalla la información del sistema para que sea más
 entendible para el usuario
@@ -251,20 +285,22 @@ recorrido = string
     (string-append
      ; Nombre del sistema
      (obtenerNombreDocs paradigmadocs) "\n"
+     "Sesion Activa: " (obtenerNombre (obtenerSesionActivaDoc paradigmadocs)) "\n"
+     "Fecha: " (fecha->string (obtenerFechaDocs paradigmadocs)) "\n"
      "Usuarios registrados:\n"
-     
-     
+     (listaUsuarios->string (obtenerListaUsersDoc paradigmadocs))
+     (listaDocumento->string
+      (obtenerListaDocumentsDoc paradigmadocs)
+      (obtenerDecryptDocs paradigmadocs))
      )
+    ;
     )
-  )
-
-(define (xddd paradigmadocs)
-  (display (paradigmadocs->string paradigmadocs))
   )
 
 
 ; CREACIÓN DE PARADIGMADOCS
 (define FECHA (date 7 12 2021)) ; opcional, se puede ingresar manualmente también
+; se definió con el fin de ahorrar tipeo en los ejemplos nada más.
 
 ; Inicialización del sistema (Cambiar nombre a gusto)
 (define sistema (paradigmadocs "paradoc" FECHA encriptador desencriptador))
@@ -284,7 +320,22 @@ recorrido = string
 ; 3) FUNCIÓN CREATE
 (define sistema3 ((login sistema2 "daniel" "123" create) FECHA "primerdoc" "holaaaa"))
 (define sistema31 ((login sistema2 "daniel" "123" create) FECHA "Segundo Documento" "Segundo Contenido"))
-(define sistema32 ((login sistema2 "daniel" "123" create) FECHA "TercerDocumento" "Contenido del tercer documento"))
+(define sistema32
+  ((login sistema2 "daniel" "123" create)
+   FECHA
+   "Cien años de Soledad"
+   (string-append
+    "Muchos años después, frente al pelotón de fusilamiento, el coronel Aureliano Buendía "
+    "habría de recordar aquella  tarde remota en que su padre lo llevó a conocer el hielo. "
+    "Macondo era entonces una aldea de veinte casas de barro y cañabrava construidas a la orilla "
+    "de un río de aguas diáfanas que se precipitaban por un lecho de piedras pulidas, blancas y "
+    "enormes como huevos prehistóricos. El mundo era tan reciente, que muchas cosas carecían de "
+    "nombre, y para mencionarlas había que señalarlas con el dedo." 
+    )
+
+   )
+  )
+
 
 ; 4) FUNCIÓN SHARE
 (define sistema4 ((login sistema3 "daniel" "123" share) 1 (access "fran" #\w) (access "admin" #\w)))
@@ -304,7 +355,14 @@ recorrido = string
 ; De no existir no funcionaría
 
 ; 7) FUNCIÓN REVOKEALLACCESSES
-(define sistema7 (login sistema6 "daniel" "123" revokeAllAccesses))
+(define sistema7 (login sistema6 "daniel" "123" revokeAllAccesses)) ; No funciona
+; Reemplaza todos los documentos por el primero
+
+; 8) FUNCIÓN PARADIGMADOCS->STRING
+(define sistema8 (login sistema4 "daniel" "123" paradigmadocs->string))
+(define sistema81 (login sistema32 "daniel" "123" paradigmadocs->string))
+(define sistema82 (login sistema5 "daniel" "123" paradigmadocs->string))
+
 
 
 

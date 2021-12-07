@@ -81,6 +81,14 @@
 ; Otras operaciones
 
 
+; Exportar usuario como string
+(define (user->string usuario)
+  (string-append
+   (obtenerNombre usuario) " "
+   (obtenerPass usuario) " "
+   )
+  )
+
 ; Exportar
 (provide user) ; Constructor
 (provide user?) ; Pertenencia

@@ -8,14 +8,30 @@
 (require "TDAacceso.rkt")
 (require "TDAlistaaccesos.rkt")
 
-; Otras funciones
+
+; ----------------- REPRESENTACIÓN ------------------------
+; (list string X date X function X function X listaUsuarios X listaDocumentos X user)
+
+
+
+
+; ------------------ MODIFICADORES ------------------
+
+
+
+; ------------------ OTROS
 ; Encriptador
+#|Función que encripta un string invirtiendo el orden en el que estos se encuentran
+dominio: string
+recorrido: string|#
 (define (encriptador texto)
   (list->string (reverse (string->list texto)))
   )
 (provide encriptador)
 
 ; Encriptar el texto de un documento
+#|dominio: function X document
+recorrido: document|#
 (define (encriptarDocumento encriptador documento)
   (document
    (obtenerFechaDocumento documento)
@@ -30,6 +46,8 @@
 (provide encriptarDocumento)
 
 ; Desencriptador
+#|dominio: string
+recorrido: string|#
 (define (desencriptador texto)
   (encriptador texto)
   )
@@ -37,11 +55,11 @@
 
 
 ; Inicialización del sistema (no cambiar)
-(define fecha (date 7 12 2021)) ; Constante fecha -> se puede cambiar
+(define fecha (date 7 12 2021)) ; Constante fecha -> se puede cambiar pero no borrar
 (define administrador (user "admin" "usach"))
 (define lista_usuarios (crearListaUsuario administrador))
 (define null_document
-  (document fecha "" "" administrador
+  (document fecha "DOCUMENTO VACIO" "#######" administrador
             (accesess (access (obtenerNombre administrador) #\w))
             0 0
             )
@@ -51,8 +69,19 @@
 (define userActivo (user "admin" "usach"))
 
 
-; Tda paradigma doc
-; Constructor
+
+
+
+
+
+
+
+
+
+
+
+; ------------------ CONSTRUCTORES ----------------------------
+; Función que construye el tda paradigmadocs
 ; Dominio = string X date X function X function
 ; Recorrido = Paradigmadocs
 (define (paradigmadocs name date encryptFunction decryptFunction)
@@ -63,7 +92,12 @@
   )
 (provide paradigmadocs)
 
+
+
 ; Constructor implicito
+#|Función que construye el tda paradigmadocs de manera implicita pidiendo todos los argumentos
+dominio: string X date X function X function X listaUsuarios X listaDocumentos X user
+recorrido: paradigmadocs|#
 (define
   (paradigmadocsImplicito
    name date encryptFunction decryptFunction
@@ -75,9 +109,10 @@
   )
 (provide paradigmadocsImplicito)
 
-; Pertenencia
+; ------------------ PERTENENCIA ------------------
 ; Evalua si el parametro es un paradigmadocs
-; NO TERMINADO
+; Dominio: paradigmadocs
+; recorrido: boolean
 (define (paradigmadocs? base)
   (if (and (string? (list-ref base 0))
            (fecha? (list-ref base 1))
@@ -88,10 +123,10 @@
   )
 (provide paradigmadocs?)
 
-#|                     Selectores                   |#
+; ------------------ SELECTORES ------------------
 #|Obtener el nombre del sistema
 Dominio = paradigmadocs
-Recorrido = boolean
+Recorrido = string
 |#
 (define (obtenerNombreDocs paradocs)
   (if (paradigmadocs? paradocs)
@@ -245,29 +280,10 @@ Recorrido = paradigmadocs
   )
 (provide cambiarSesionActivaDoc)
 
-#|
-; Agregar un permiso a un documento
-; Dominio = paradigmadocs X acceso
-(define (modificarListaPermiso paradoc acceso)
-  (if (and (paradigmadocs? paradoc) (access? acceso))
-      ; Caso verdadero
-      (paradigmadocsImplicito
-       (obtenerNombreDocs paradoc)
-       (obtenerFechaDocs paradoc)
-       (obtenerEncryptDocs paradoc)
-       (obtenerDecryptDocs paradoc)
-       (obtenerListaUsersDoc paradoc) 
-       (append (obtenerListaDocumentsDoc paradoc)) ; No usar append
-       (obtenerSesionActivaDoc paradoc) ; Aqui hacer el cambio
-       )
-      ; Caso falso
-      paradoc
-      )
-  )
-|#
 
 ; Reemplaza un documento por otro
 ; Dominio = paradigmadocs X document X document
+; Recorrido = paradigmadocs
 (define (reemplazarDocumentoDoc paradoc documentoInicial documentoFinal)
   (if (and (paradigmadocs? paradoc) (document? documentoFinal))
       ; Caso verdadero
@@ -287,6 +303,8 @@ Recorrido = paradigmadocs
 (provide reemplazarDocumentoDoc)
 
 ; Función que mantiene todos los valores de paradigmadocs menos la lista de documentos
+; Dominio = paradigmadocs X listaDocumento
+; Recorrido = paradigmadocs
 (define (actualizarListaDocumentosDoc paradoc listaDocumentos)
   (paradigmadocsImplicito
        (obtenerNombreDocs paradoc)
@@ -299,85 +317,3 @@ Recorrido = paradigmadocs
        )
   )
 (provide actualizarListaDocumentosDoc)
-
-
-
-
-; (restaurarVersionDocumento lista1 idDoc version)
-; (actualizarListaDocumentosDoc paradoc listaDocumentos)
-
-
-
-
-
-
-
-
-
-; Función para imprimir
-; Para mostrar todo el sistema con toda la información
-(define (ps base)
-  (if (null? base)
-      ; V
-      null
-      ; F
-      (begin0
-        (write (obtenerNombreDocs base)) (newline)
-        (write "Fecha: ") (write (obtenerFechaDocs base)) (newline)
-        (write "Usuarios registrados:")
-        (write (obtenerListaUsersDoc base)) (newline) (newline)
-        (write "Cantidad de documentos: ") (write (length (obtenerListaDocumentsDoc base))) (newline)
-        (write "Lista de documentos :") (write (obtenerListaDocumentsDoc base)) (newline) (newline)
-        (write "Sesion activa: ") (write (obtenerSesionActivaDoc base)) (newline)
-        ) 
-      )
-  )
-(provide ps)
-
-; Función para mostrar por pantalla en string
-#|
-(define (mostrar paradoc)
-  ; Encapsulación
-  (define (mostrarEncapsulado paradoc string)
-    ()
-    )
-  ; Llamar a la función
-  (mostrarEncapsulado paradoc "")
-  )
-|#
-; Función para mostrar por pantalla la información de un documento
-(define (printDocumento documento)
-  (begin0
-    (write "Nombre del archivo: ") (write (obtenerNombreDocumento documento)) (newline)
-    (write "Autor: ") (write (obtenerCreadorDocumento documento)) (newline)
-    (write "Permisos: ") (write (obtenerListaAccesos documento)) (newline)
-    (write "Fecha: ") (write (obtenerFechaDocumento documento)) (newline)
-    ; Contenido
-    (write "Contenido: ") (newline)
-    (write (encriptador (obtenerContenidoDocumento documento))) (newline)
-    )
-  )
-(provide printDocumento)
-
-; Función para mostrar por pantalla la información de un documento dado un indice
-(define (printDocumentoIndice paradoc id)
-  (printDocumento (buscarDocumento (obtenerListaDocumentsDoc paradoc) id))
-  )
-(provide printDocumentoIndice)
-
-; Función para imprimir una lista de documentos
-
-
-
-
-
-; Pruebas
-(define DocPrueba
-  (document fecha "Documento de prueba" "Contenido de prueba"
-            (user "daniel" "123") (accesess (access "daniel" #\w)) 2 -2)
-  )
-
-
-
-
-
