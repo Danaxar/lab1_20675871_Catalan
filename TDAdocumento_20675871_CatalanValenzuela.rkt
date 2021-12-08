@@ -2,11 +2,11 @@
 
 ; TDA documento
 
-(require "TDAfecha.rkt")
-(require "TDAusuario.rkt")
-(require "TDAregistroid.rkt")
-(require "TDAacceso.rkt")
-(require "TDAlistaaccesos.rkt")
+(require "TDAfecha_20675871_CatalanValenzuela.rkt")
+(require "TDAusuario_20675871_CatalanValenzuela.rkt")
+(require "TDAregistroid_20675871_CatalanValenzuela.rkt")
+(require "TDAacceso_20675871_CatalanValenzuela.rkt")
+(require "TDAlistaaccesos_20675871_CatalanValenzuela.rkt")
 
 ; ----------------- REPRESENTACIÓN ------------------------
 ; date X string X string X user X listaAccesos X int X int

@@ -1,7 +1,7 @@
 #lang racket
 
-(require "TDAdocumento.rkt")
-(require "TDAfecha.rkt")
+(require "TDAdocumento_20675871_CatalanValenzuela.rkt")
+(require "TDAfecha_20675871_CatalanValenzuela.rkt")
 
 ; Tda lista documento
 

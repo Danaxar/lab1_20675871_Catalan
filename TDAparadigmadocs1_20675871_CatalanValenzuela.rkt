@@ -1,12 +1,12 @@
 #lang racket
-(require "TDAfecha.rkt")
-(require "TDAusuario.rkt")
-(require "TDAregistroid.rkt")
-(require "TDAlistausuario.rkt")
-(require "TDAdocumento.rkt")
-(require "TDAlistadocumento.rkt")
-(require "TDAacceso.rkt")
-(require "TDAlistaaccesos.rkt")
+(require "TDAfecha_20675871_CatalanValenzuela.rkt")
+(require "TDAusuario_20675871_CatalanValenzuela.rkt")
+(require "TDAregistroid_20675871_CatalanValenzuela.rkt")
+(require "TDAlistausuario_20675871_CatalanValenzuela.rkt")
+(require "TDAdocumento_20675871_CatalanValenzuela.rkt")
+(require "TDAlistadocumento_20675871_CatalanValenzuela.rkt")
+(require "TDAacceso_20675871_CatalanValenzuela.rkt")
+(require "TDAlistaaccesos_20675871_CatalanValenzuela.rkt")
 
 
 ; ----------------- REPRESENTACIÓN ------------------------

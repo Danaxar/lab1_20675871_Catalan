@@ -2,15 +2,15 @@
 #lang racket
 
 ; Importaciones TDA's
-(require "TDAfecha.rkt")
-(require "TDAusuario.rkt")
-(require "TDAregistroid.rkt")
-(require "TDAlistausuario.rkt")
-(require "TDAdocumento.rkt")
-(require "TDAlistadocumento.rkt")
-(require "TDAacceso.rkt")
-(require "TDAlistaaccesos.rkt")
-(require "TDAparadigmadocs1.rkt")
+(require "TDAfecha_20675871_CatalanValenzuela.rkt")
+(require "TDAusuario_20675871_CatalanValenzuela.rkt")
+(require "TDAregistroid_20675871_CatalanValenzuela.rkt")
+(require "TDAlistausuario_20675871_CatalanValenzuela.rkt")
+(require "TDAdocumento_20675871_CatalanValenzuela.rkt")
+(require "TDAlistadocumento_20675871_CatalanValenzuela.rkt")
+(require "TDAacceso_20675871_CatalanValenzuela.rkt")
+(require "TDAlistaaccesos_20675871_CatalanValenzuela.rkt")
+(require "TDAparadigmadocs1_20675871_CatalanValenzuela.rkt")
 
 
 
@@ -297,6 +297,9 @@ recorrido = string
     )
   )
 
+
+(define (imprimir sistema)
+  (display (paradigmadocs->string sistema)))
 
 ; CREACIÓN DE PARADIGMADOCS
 (define FECHA (date 7 12 2021)) ; opcional, se puede ingresar manualmente también
